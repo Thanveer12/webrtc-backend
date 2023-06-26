@@ -27,8 +27,8 @@ app.get('*', (req, res, next) => {
 
 // SSL cert for HTTPS access
 const options = {
-  key: fs.readFileSync('./server/ssl/key.pem', 'utf-8'),
-  cert: fs.readFileSync('./server/ssl/cert.pem', 'utf-8')
+//   key: fs.readFileSync('./server/ssl/key.pem', 'utf-8'),
+//   cert: fs.readFileSync('./server/ssl/cert.pem', 'utf-8')
 }
 
 const httpsServer = https.createServer(options, app)
@@ -430,7 +430,7 @@ const createWebRtcTransport = async (router) => {
       const webRtcTransport_options = {
         listenIps: [
           {
-            ip: '0.0.0.0', // replace with relevant IP address
+            ip: '0.0.0.0', // replace with relevant IP address 127.0.0.1
             // announcedIp: '10.0.0.115',
           }
         ],
