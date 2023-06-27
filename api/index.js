@@ -1,3 +1,15 @@
+// import express from 'express';
+// import serverless from 'serverless-http';
+// const app = express();
+
+// app.get('/api/hello', (req, res) => {
+//   res.json({ message: 'Hello, world!' });
+// });
+
+// export const handler = serverless(app);
+
+
+// import serverless from 'serverless-http';
 /**
  * integrating mediasoup server with a node.js application
  */
@@ -23,7 +35,11 @@ app.get('*', (req, res, next) => {
   res.send(`You need to specify a room name in the path e.g. 'https://127.0.0.1/sfu/room'`)
 })
 
-app.use('/sfu/:room', express.static("index.js"))
+app.get('/api/hello', (req, res) => {
+  res.json({ message: 'Hello, world!' });
+});
+
+// app.use('/sfu/:room', express.static(path.join(__dirname, 'public')))
 
 // SSL cert for HTTPS access
 const options = {
@@ -460,4 +476,5 @@ const createWebRtcTransport = async (router) => {
     }
   })
 }
-export default app
+export default app;
+// export const handler = serverless(app);

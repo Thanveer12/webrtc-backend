@@ -1,5 +1,5 @@
 
-const serverless = require('serverless-http');
+// import serverless from 'serverless-http';
 /**
  * integrating mediasoup server with a node.js application
  */
@@ -17,7 +17,7 @@ const __dirname = path.resolve()
 import { Server } from 'socket.io'
 import mediasoup from 'mediasoup'
 
-app.get('*', (req, res, next) => {
+app.get('/', (req, res, next) => {
   const path = '/sfu/'
 
   if (req.path.indexOf(path) == 0 && req.path.length > path.length) return next()
@@ -25,7 +25,7 @@ app.get('*', (req, res, next) => {
   res.send(`You need to specify a room name in the path e.g. 'https://127.0.0.1/sfu/room'`)
 })
 
-// app.use('/sfu/:room', express.static(path.join(__dirname, 'public')))
+app.use('/sfu/:room', express.static(path.join(__dirname, 'public')))
 
 // SSL cert for HTTPS access
 const options = {
@@ -462,4 +462,5 @@ const createWebRtcTransport = async (router) => {
     }
   })
 }
-export const handler = serverless(app);
+export default app;
+// export const handler = serverless(app);
