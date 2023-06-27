@@ -35,7 +35,7 @@ const __dirname = path.resolve()
 import { Server } from 'socket.io'
 import mediasoup from 'mediasoup'
 
-app.get('*', (req, res, next) => {
+app.get('/', (req, res, next) => {
   const path = '/sfu/'
 
   if (req.path.indexOf(path) == 0 && req.path.length > path.length) return next()
