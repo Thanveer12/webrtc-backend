@@ -35,7 +35,7 @@ const __dirname = path.resolve()
 import { Server } from 'socket.io'
 import mediasoup from 'mediasoup'
 
-app.get('/', (req, res, next) => {
+router.get('/', (req, res, next) => {
   const path = '/sfu/'
   res.send(`You need to specify a room name in the path e.g. 'https://127.0.0.1/sfu/room'`)
   if (req.path.indexOf(path) == 0 && req.path.length > path.length) return next()
