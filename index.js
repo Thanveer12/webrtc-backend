@@ -1,4 +1,4 @@
-const express = require('express');
+
 const serverless = require('serverless-http');
 /**
  * integrating mediasoup server with a node.js application
