@@ -1,31 +1,20 @@
 {
-  "name": "example1",
+  "name": "vercel-testing",
   "version": "1.0.0",
-  "description": "",
+  "description": "node express testing",
   "main": "index.js",
   "engines": {
-    "node": "18.x"
+    "node": "14.x"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js",
-    "watch": "watchify public/index.js -o public/bundle.js -v",
-    "build": "vercel build",
-    "login": "vercel login"
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
-    "express": "^4.18.2",
-    "httpolyglot": "^0.1.2",
-    "mediasoup": "^3.12.3",
-    "mediasoup-client": "^3.6.86",
-    "socket.io": "^4.6.2",
-    "socket.io-client": "^4.6.2",
-    "vercel": "^30.2.3"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.22"
+    "express": "^4.17.3",
+    "nodemon": "^2.0.15"
   }
 }
