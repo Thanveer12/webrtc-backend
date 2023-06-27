@@ -24,6 +24,8 @@
 const serverless = require("serverless-http");
 import express from 'express'
 const app = express()
+const router = express.Router();
+
 
 import https from 'httpolyglot'
 import fs from 'fs'
@@ -41,7 +43,7 @@ app.get('*', (req, res, next) => {
   res.send(`You need to specify a room name in the path e.g. 'https://127.0.0.1/sfu/room'`)
 })
 
-app.use('/sfu/:room', express.static("index.js"))
+app.use('/sfu', router)
 
 // SSL cert for HTTPS access
 const options = {
