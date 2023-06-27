@@ -20,7 +20,8 @@
     "mediasoup": "^3.12.3",
     "mediasoup-client": "^3.6.86",
     "socket.io": "^4.6.2",
-    "socket.io-client": "^4.6.2"
+    "socket.io-client": "^4.6.2",
+    "vercel": "^30.2.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"

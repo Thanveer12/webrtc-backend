@@ -460,4 +460,4 @@ const createWebRtcTransport = async (router) => {
     }
   })
 }
-module.exports = app;
+export default app
