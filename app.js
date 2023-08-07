@@ -23,7 +23,7 @@ app.get('*', (req, res, next) => {
   res.send(`You need to specify a room name in the path e.g. 'https://127.0.0.1/sfu/room'`)
 })
 
-app.use('/sfu/:room', express.static("index.js"))
+app.use('/sfu/:room', express.static(path.join(__dirname, 'public')))
 
 // SSL cert for HTTPS access
 const options = {
@@ -132,14 +132,14 @@ connections.on('connection', async socket => {
     }
   })
 
-  socket.on('joinRoom', async ({ roomName }, callback) => {
+  socket.on('joinRoom', async ({ roomName, userName }, callback) => {
     // create Router if it does not exist
     // const router1 = rooms[roomName] && rooms[roomName].get('data').router || await createRoom(roomName, socket.id)
-    const router1 = await createRoom(roomName, socket.id)
+    const router1 = await createRoom(roomName, socket.id, userName)
 
     peers[socket.id] = {
       socket,
-      roomName,           // Name for the Router this Peer joined
+      roomName,          // Name for the Router this Peer joined
       transports: [],
       producers: [],
       consumers: [],
@@ -156,7 +156,7 @@ connections.on('connection', async socket => {
     callback({ rtpCapabilities })
   })
 
-  const createRoom = async (roomName, socketId) => {
+  const createRoom = async (roomName, socketId, name) => {
     // worker.createRouter(options)
     // options = { mediaCodecs, appData }
     // mediaCodecs -> defined above
@@ -164,9 +164,11 @@ connections.on('connection', async socket => {
     // none of the two are required
     let router1
     let peers = []
+    let names = {};
     if (rooms[roomName]) {
       router1 = rooms[roomName].router
       peers = rooms[roomName].peers || []
+      names = rooms[roomName].name || {}
     } else {
       router1 = await worker.createRouter({ mediaCodecs, })
     }
@@ -176,6 +178,7 @@ connections.on('connection', async socket => {
     rooms[roomName] = {
       router: router1,
       peers: [...peers, socketId],
+      name: {...names, Name: name, socketId: socketId}
     }
 
     return router1
@@ -360,7 +363,10 @@ connections.on('connection', async socket => {
     try {
 
       const { roomName } = peers[socket.id]
+      // const { peerDetails } = peers[socket.id];
+      // const name = peerDetails.name;
       const router = rooms[roomName].router
+      const name = rooms[roomName].name;
       let consumerTransport = transports.find(transportData => (
         transportData.consumer && transportData.transport.id == serverConsumerTransportId
       )).transport
@@ -401,6 +407,7 @@ connections.on('connection', async socket => {
           kind: consumer.kind,
           rtpParameters: consumer.rtpParameters,
           serverConsumerId: consumer.id,
+          name: name
         }
 
         // send the parameters to the client
@@ -460,4 +467,3 @@ const createWebRtcTransport = async (router) => {
     }
   })
 }
-export default app

@@ -1,31 +1,11 @@
-// const express = require("express");
-// const serverless = require("serverless-http");
-
-// const app = express();
-// const router = express.Router();
-
-// router.get("/", (req, res) => {
-//   res.json({
-//     hello: "hi!"
-//   });
-// });
-
-// app.use(`/.netlify/functions/api`, router);
-
-// module.exports = app;
-// module.exports.handler = serverless(app);
-
 /**
  * integrating mediasoup server with a node.js application
  */
 
 /* Please follow mediasoup installation requirements */
 /* https://mediasoup.org/documentation/v3/mediasoup/installation/ */
-const serverless = require("serverless-http");
 import express from 'express'
 const app = express()
-const router = express.Router();
-
 
 import https from 'httpolyglot'
 import fs from 'fs'
@@ -35,15 +15,15 @@ const __dirname = path.resolve()
 import { Server } from 'socket.io'
 import mediasoup from 'mediasoup'
 
-router.get('/', (req, res, next) => {
+app.get('*', (req, res, next) => {
   const path = '/sfu/'
-  res.send(`You need to specify a room name in the path e.g. 'https://127.0.0.1/sfu/room'`)
+
   if (req.path.indexOf(path) == 0 && req.path.length > path.length) return next()
 
   res.send(`You need to specify a room name in the path e.g. 'https://127.0.0.1/sfu/room'`)
 })
 
-app.use('/sfu', router)
+app.use('/sfu/:room', express.static(path.join(__dirname, 'public')))
 
 // SSL cert for HTTPS access
 const options = {
@@ -78,15 +58,15 @@ let consumers = []      // [ { socketId1, roomName1, consumer, }, ... ]
 
 const createWorker = async () => {
   worker = await mediasoup.createWorker({
-    rtcMinPort: 10000,
-    rtcMaxPort: 20000,
+    rtcMinPort: 2000,
+    rtcMaxPort: 2020,
   })
   console.log(`worker pid ${worker.pid}`)
 
   worker.on('died', error => {
     // This implies something serious happened, so kill the application
     console.error('mediasoup worker has died')
-    setTimeout(() => process.exit(1), 4000) // exit in 2 seconds
+    setTimeout(() => process.exit(1), 2000) // exit in 2 seconds
   })
 
   return worker
@@ -140,15 +120,13 @@ connections.on('connection', async socket => {
     producers = removeItems(producers, socket.id, 'producer')
     transports = removeItems(transports, socket.id, 'transport')
 
-    if (peers.length > 0) {
-      const { roomName } = peers[socket.id]
-      delete peers[socket.id]
+    const { roomName } = peers[socket.id]
+    delete peers[socket.id]
 
-      // remove socket from room
-      rooms[roomName] = {
-        router: rooms[roomName].router,
-        peers: rooms[roomName].peers.filter(socketId => socketId !== socket.id)
-      }
+    // remove socket from room
+    rooms[roomName] = {
+      router: rooms[roomName].router,
+      peers: rooms[roomName].peers.filter(socketId => socketId !== socket.id)
     }
   })
 
@@ -450,8 +428,8 @@ const createWebRtcTransport = async (router) => {
       const webRtcTransport_options = {
         listenIps: [
           {
-            ip: '127.0.0.1', // replace with relevant IP address
-            // announcedIp: '10.0.0.115',
+            ip: '0.0.0.0', // replace with relevant IP address
+            announcedIp: '10.0.0.115',
           }
         ],
         enableUdp: true,
@@ -480,4 +458,3 @@ const createWebRtcTransport = async (router) => {
     }
   })
 }
-export const handler = serverless(app);
