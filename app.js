@@ -57,8 +57,6 @@ let peers = {}          // { socketId1: { roomName1, socket, transports = [id1, 
 let transports = []     // [ { socketId1, roomName1, transport, consumer }, ... ]
 let producers = []      // [ { socketId1, roomName1, producer, }, ... ]
 let consumers = []      // [ { socketId1, roomName1, consumer, }, ... ]
-let mediasoupWorkers = [];
-let nextMediasoupWorkerIdx = 0;
 
 
 const createWorker = async () => {
@@ -73,7 +71,6 @@ const createWorker = async () => {
     console.error('mediasoup worker has died')
     setTimeout(() => process.exit(1), 4000) // exit in 2 seconds
   })
-  mediasoupWorkers.push(worker);
 
   return worker
 }
@@ -436,24 +433,11 @@ connections.on('connection', async socket => {
   })
 })
 
-function getMediasoupWorker()
-{
-	const worker = mediasoupWorkers[nextMediasoupWorkerIdx];
-
-	if (++nextMediasoupWorkerIdx === mediasoupWorkers.length)
-		nextMediasoupWorkerIdx = 0;
-
-	return worker;
-}
-
 const createWebRtcTransport = async (router) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const mediasoupWorker = getMediasoupWorker();
-      const serverMedia =  mediasoupWorker.appData.webRtcServer
       // https://mediasoup.org/documentation/v3/mediasoup/api/#WebRtcTransportOptions
       const webRtcTransport_options = {
-        webRtcServer : serverMedia, ///////
         listenIps: [
           {
             // 44.225.181.72
