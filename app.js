@@ -28,7 +28,7 @@ app.get('*', (req, res, next) => {
   }
   //You need to specify a room name in the path e.g. 'https://127.0.0.1/sfu/room' +
 
-  res.send(JSON.stringify(JSON.stringify({ message: userIpAddress })))
+  res.send(userIpAddress)
 })
 
 app.use('/sfu/:room', express.static(path.join(__dirname, 'public')))
