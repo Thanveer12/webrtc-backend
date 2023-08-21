@@ -5,6 +5,7 @@
 /* Please follow mediasoup installation requirements */
 /* https://mediasoup.org/documentation/v3/mediasoup/installation/ */
 import express from 'express'
+import cors from 'cors';
 const app = express()
 
 import https from 'httpolyglot'
@@ -14,6 +15,9 @@ const __dirname = path.resolve()
 
 import { Server } from 'socket.io'
 import mediasoup from 'mediasoup'
+
+app.set('trust proxy', true)
+app.use(cors())
 
 app.get('*', (req, res, next) => {
   const path = '/sfu/'
