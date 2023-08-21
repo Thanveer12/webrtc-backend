@@ -20,7 +20,11 @@ app.get('*', (req, res, next) => {
 
   if (req.path.indexOf(path) == 0 && req.path.length > path.length) return next()
 
-  res.send(`You need to specify a room name in the path e.g. 'https://127.0.0.1/sfu/room'`)
+  const userIpAddress = req.ip;
+  console.log(req.socket.remoteAddress);
+  console.log(req.ip);
+
+  res.send(`You need to specify a room name in the path e.g. 'https://127.0.0.1/sfu/room' + ${userIpAddress}`)
 })
 
 app.use('/sfu/:room', express.static(path.join(__dirname, 'public')))
@@ -440,9 +444,10 @@ const createWebRtcTransport = async (router) => {
       const webRtcTransport_options = {
         listenIps: [
           {
+            ip: '0.0.0.0'
             // 44.225.181.72
             // 44.227.217.144`,
-            ip: '127.0.0.1', // replace with relevant IP address
+            // ip: '127.0.0.1', // replace with relevant IP address
             // announcedIp: '100.20.92.101',
           }
         ],
