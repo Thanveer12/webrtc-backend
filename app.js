@@ -23,11 +23,12 @@ app.get('*', (req, res, next) => {
   const userIpAddress = req.ip;
   console.log(req.socket.remoteAddress);
   console.log(req.ip);
-  const data = {
-    message: `You need to specify a room name in the path e.g. 'https://127.0.0.1/sfu/room' + ${userIpAddress}`
+  let data = {
+    message: `${userIpAddress}`
   }
+  //You need to specify a room name in the path e.g. 'https://127.0.0.1/sfu/room' +
 
-  res.send(JSON.stringify(data))
+  res.send(JSON.stringify(JSON.stringify({ message: userIpAddress })))
 })
 
 app.use('/sfu/:room', express.static(path.join(__dirname, 'public')))
