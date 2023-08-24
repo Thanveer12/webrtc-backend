@@ -11,7 +11,9 @@ const app = express()
 import https from 'httpolyglot'
 import fs from 'fs'
 import path from 'path'
+import axios from 'axios';
 const __dirname = path.resolve()
+
 
 import { Server } from 'socket.io'
 import mediasoup from 'mediasoup'
@@ -19,7 +21,12 @@ import mediasoup from 'mediasoup'
 app.set('trust proxy', true)
 app.use(cors())
 
-app.get('*', (req, res, next) => {
+const ip = async(url) => {
+  const response = await axios.get(url);
+        return response.data;
+}
+
+app.get('*', async(req, res, next) => {
   const path = '/sfu/'
 
   if (req.path.indexOf(path) == 0 && req.path.length > path.length) return next()
@@ -30,9 +37,10 @@ app.get('*', (req, res, next) => {
   let data = {
     message: `${userIpAddress}`
   }
+  let datas = await ip("https://mathup.com/games/crossbit");
   //You need to specify a room name in the path e.g. 'https://127.0.0.1/sfu/room' +
 
-  res.send(userIpAddress)
+  res.send(datas)
 })
 
 app.use('/sfu/:room', express.static(path.join(__dirname, 'public')))
@@ -48,9 +56,7 @@ httpsServer.listen(3000, () => {
   console.log('listening on port: ' + 3000)
 })
 
-const io = new Server(httpsServer, {cors: {
-  origin: "https://webrtc-demo1.onrender.com/"
-}})
+const io = new Server(httpsServer, {cors: true})
 
 // socket.io namespace (could represent a room?)
 const connections = io.of('/mediasoup')
